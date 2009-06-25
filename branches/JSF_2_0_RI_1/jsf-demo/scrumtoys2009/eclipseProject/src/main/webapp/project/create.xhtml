@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="pageTitle">
+            <h:outputText value="#{i18n['project.create.title']}"></h:outputText>
+        </ui:define>
+        <ui:define name="navigationBar">            
+            <h:commandLink action="/project/show" value="#{i18n['navigation.projects']}"></h:commandLink>
+            <h:outputText value="#{i18n['navigation.separtor']}"></h:outputText>
+            <h:outputText value="#{i18n['project.create.form.title']}" styleClass="tituloForm"  />
+        </ui:define>
+        <ui:define name="content">        
+            <h:form id="createProjectForm">
+                <h:panelGrid columns="1" footerClass="footerForm">
+                    <h:panelGroup>
+                        <ui:include src="form.xhtml"/>
+                    </h:panelGroup>
+
+                    <f:facet name="footer">
+                        <h:commandButton id="btnCreate" action="#{projectManager.save}" value="#{i18n['project.create.button.create']}" styleClass="botaoPostIt" />
+                        <h:commandButton id="btnCancel" action="show" value="#{i18n['project.create.button.cancel']}" styleClass="botaoPostIt" immediate="true" />
+                    </f:facet>
+                </h:panelGrid>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>
