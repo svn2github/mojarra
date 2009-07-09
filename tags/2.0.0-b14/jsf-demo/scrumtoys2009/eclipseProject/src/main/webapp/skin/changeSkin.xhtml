@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:scrum="http://java.sun.com/jsf/composite/components">>
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="pageTitle">
+            <h:outputText value="#{i18n['story.show.title']}"></h:outputText>
+        </ui:define>
+        <ui:define name="content">
+            <h:form id="frmListStories">
+                <h:panelGrid columns="5" width="990" >
+                    <h:outputLabel value=""></h:outputLabel>
+                    <scrum:postit action="#{skinManager.yellowSkin}" color="Yellow" >
+                        <ui:param name="postitLabel" value=""></ui:param>
+                        <ui:param name="postitText" value="Yellow"></ui:param>
+                    </scrum:postit>
+                    <scrum:postit action="#{skinManager.orangeSkin}" color="Orange">
+                        <ui:param name="postitLabel" value=""></ui:param>
+                        <ui:param name="postitText" value="Orange"></ui:param>
+                    </scrum:postit>
+                    <scrum:postit action="#{skinManager.redSkin}" color="Red" >
+                        <ui:param name="postitLabel" value=""></ui:param>
+                        <ui:param name="postitText" value="Red"></ui:param>
+                    </scrum:postit>
+                    <scrum:postit action="#{skinManager.blueSkin}" color="Blue" >
+                        <ui:param name="postitLabel" value=""></ui:param>
+                        <ui:param name="postitText" value="Blue"></ui:param>
+                    </scrum:postit>
+
+                </h:panelGrid>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>
