@@ -1,0 +1,100 @@
+Instructions on promoting a build:
+
+Engineering finishes JSF2.0 code.
+
+Ensure all tests pass via:
+ant clean main test.with.container.refresh
+
+Engineering verifies QL passes
+checkout v3 workspace.
+cd v3/tests/quicklook
+mvn -Dglassfish.home=$GLASSFISH test
+(where $GLASSFISH is a recent v3 build with the new jsf jars added in)
+
+Engineering updates updatecenter2/conf/jsf_proto.py to correct version #. (ex: 2.0.1-0,1)
+
+If doing a new maven release, be sure to update the pom.xml files in each demo directory.
+
+Tag build.
+Currently, we're using a tag format of
+2.0.1-bXX - where "XX" is a monotonically increasing number, incremented with every build.
+sample tagging command:
+svn copy https://mojarra.dev.java.net/svn/mojarra/trunk \
+         https://mojarra.dev.java.net/svn/mojarra/tags/2.0.1-b01 \
+         -m "Tag 2.0.1 Build 01"
+
+RE (Terena) promotes the build, with maven.deploy.promoted (ex: 2.0.1-b01)
+Engineering needs to give RE the tag name, build.type, and build.number
+RE changes variables found in common.xml (build.type, etc) via -D as part of build
+    build.type will be set to a value such as BETA, RC, FCS, etc.
+    build.number will be a monotonically increasing integer, incremented for each build (i.e., b01, b02)
+After the push to maven, check (it can take a while to show up, up to 30 minutes)
+http://download.java.net/maven/2/com/sun/faces/jsf-impl/
+http://download.java.net/maven/2/com/sun/faces/jsf-api/
+
+
+After testing, engineering integrates to v3 (including UC), see integration instructions.
+The integration pushes the new build bits to repine.
+
+QE runs qualification tests against repine (current GFv3), comfirms they pass.
+
+QE gives go-ahead.
+
+For a release, RE will then do a maven.deploy.release for a released build (ex: 2.0.1)
+
+Engineering then needs to once again integrate v3.
+
+
+RELEASING TO JAVA.NET
+=========================================
+NOTE: we currently don't push every promoted build to java.net.  These instructions
+      are for pushing a release to the public.  The steps above are valid in
+      all cases.
+
+ - Copy the downloaded binary and source bundles promoted from RE to a local
+   directory.  These bundles are what will be made available to the public.
+   (You can download them by ftp from rindge.sfbay.sun.com, cd to the provided directory
+   (currently /net/jws-sparc.sfbay/bld1/BUILD_AREA/jsf2.0/bundles/latest), and then
+   mget * - it's also possible to get these bundles via http, by visiting a site such as:
+   http://javaweb.sfbay/java/re/jsf/2.0.1/promoted/FCS/b02/archive/bundles/ )
+
+ - Prepare release notes:
+    + check out the website:  cvs -d :pserver:<j.net uid>@cvs.dev.java.net:/cvs co -P -d jsf-web javaserverfaces
+    + if releasing a new patch release:
+       * copy the directory structure of an existing version to the new version
+         (e.g. rsync -r -C 1.2_12/* 1.2_13).  If this is another cut
+       * replace the old version numbers with the new version numbers
+       * update changelog.html with:
+         - outline of new features (if any)
+         - new context init parameters (if any - see older release notes for examples)
+         - issues resolved
+           + To get the list of issues, use the report tool to generate a report
+             and gather a list of all issues resolved for this patch release
+             (this may span several builds).  The table for the resolved
+             issues should be two columns for the issue ID and description.
+             Ensure the ID is a hyperlink.  I use a FireFox addon called
+             Scrapbook to copy a selection of issues into a separate
+             html document and then cut/paste into changelog.html.  Don't forget
+             to update the row styles (again, see older changelogs for examples)
+        * check in the new directory structure and files
+     + if releasing an update to an existing version (i.e. 2.0.0 BETA1 to 2.0.0 BETA2)
+       * update the version in the existing release notes
+       * append the issues resolved between the two versions in changelog.xhtml
+         (Use the 2.0.0 release notes for an example)
+   - Upload the binary and source bundles to java.net.  The new directory
+     should be placed under: Downloads->Release->Version
+   - In the same directory, add a link that refers to the Release Notes (see
+     previous versions for an example)
+   - Update download.html:
+     + If necessary move the version being replaced to Archived Releases
+     + Add the new version using the existing format
+   - Create a new download button for the new version using
+     images/downloadbackground.png.  I use gimp to do the image manipulation.
+     Add the new version to the template using Sans Bold font.  Adjust the
+     font weight to fill the button.  Save the image as download<version>.png
+     (e.g. download1212.png).  Check the image in to CVS.
+   - Update index.html to reference the new download button.  Have the link
+     the image refers to point to the folder containing the new build (should
+     display the source, binary, and release notes).
+   - Add a new announcement using the project's news facility.  Use existing
+     announcements as a template.
